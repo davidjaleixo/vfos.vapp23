@@ -1,0 +1,4 @@
+{
+    "view_definition_query":"select t.idtask, t.idprojects, t.name, t.sdate, t.edate, t.createdby, t.createdat, t.open, t.rescheduled, t.place, acc.username, proj.name as projectname, proj.status from consulgal.tasks as t left join consulgal.accounts as acc on acc.idaccounts = t.createdby left join consulgal.projects as proj on proj.idprojects = t.idprojects",
+    "view_name":"userproject_on_tasks"
+ }

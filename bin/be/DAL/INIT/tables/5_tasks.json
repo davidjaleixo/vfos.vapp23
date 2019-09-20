@@ -1,0 +1,95 @@
+{
+    "columns": [
+        {
+            "name": "idTask",
+            "type": "serial"
+        },
+        {
+            "allow_null": false,
+            "default": "task name",
+            "name": "name",
+            "size": 100,
+            "type": "varchar"
+        },
+        {
+            "default": "now()",
+            "name": "sdate",
+            "type": "TIMESTAMP"
+        },
+        {
+            "default": "now()",
+            "name": "edate",
+            "type": "TIMESTAMP"
+        },
+        {
+            "allow_null": false,
+            "default": "true",
+            "name": "open",
+            "type": "boolean"
+        },
+        {
+            "allow_null": true,
+            "default": false,
+            "name": "rescheduled",
+            "type": "boolean"
+        },
+        {
+            "name": "idProjects",
+            "type": "serial"
+        },
+        {
+            "name": "createdby",
+            "type": "serial"
+        },
+        {
+            "default": "now()",
+            "name": "createdat",
+            "type": "TIMESTAMP"
+        },
+        {
+            "allow_null": true,
+            "name": "place",
+            "type": "integer"
+         }
+    ],
+    "constraints": [
+        {
+            "foreign_key": {
+                "columns": [
+                    "createdby"
+                ],
+                "name": "fk_createdby",
+                "on_delete": "CASCADE",
+                "referenced_columns": [
+                    "idAccounts"
+                ],
+                "referenced_table_name": "accounts"
+            },
+            "foreign_key": {
+                "columns": [
+                    "idProjects"
+                ],
+                "name": "fk_idProjects",
+                "on_delete": "CASCADE",
+                "referenced_columns": [
+                    "idProjects"
+                ],
+                "referenced_table_name": "projects"
+            },
+            "primary_key": {
+                "columns": [
+                    "idTask"
+                ],
+                "name": "pk_idTask",
+                "on_delete": "CASCADE"
+            },
+            "unique": {
+                "columns": [
+                    "idTask"
+                ],
+                "name": "idTask"
+            }
+        }
+    ],
+    "table_name": "tasks"
+}

@@ -1,0 +1,81 @@
+{
+    "columns": [
+        {
+            "name": "idDelay",
+            "type": "serial"
+        },
+        {
+            "allow_null": false,
+            "default": "delay description",
+            "name": "description",
+            "size": 300,
+            "type": "varchar"
+        },
+        {
+            "allow_null": false,
+            "default": "true",
+            "name": "accepted",
+            "type": "boolean"
+        },
+        {
+            "name": "idTask",
+            "type": "serial"
+        },
+        {
+            "name": "createdby",
+            "type": "serial"
+        },
+        {
+            "default": "now()",
+            "name": "createdat",
+            "type": "TIMESTAMP"
+        },
+        {
+            "allow_null": true,
+            "name": "impactlevel",
+            "type": "integer"
+        }
+    ],
+    "constraints": [
+        {
+            "foreign_key": {
+                "columns": [
+                    "createdby"
+                ],
+                "name": "fk_createdby",
+                "on_delete": "CASCADE",
+                "on_update": "CASCADE",
+                "referenced_columns": [
+                    "idAccounts"
+                ],
+                "referenced_table_name": "accounts"
+            },
+            "foreign_key": {
+                "columns": [
+                    "idTask"
+                ],
+                "name": "fk_idTask",
+                "on_delete": "CASCADE",
+                "referenced_columns": [
+                    "idTask"
+                ],
+                "referenced_table_name": "tasks"
+            },
+            "primary_key": {
+                "columns": [
+                    "idDelay"
+                ],
+                "name": "pk_idDelay",
+                "on_delete": "CASCADE",
+                "on_update": "CASCADE"
+            },
+            "unique": {
+                "columns": [
+                    "idDelay"
+                ],
+                "name": "idDelay"
+            }
+        }
+    ],
+    "table_name": "delays"
+}

@@ -3,5 +3,5 @@ module.exports = {
     projects : require('./projects'),
     users : require('./users'),
     init : require('./init'),
-    notification : require('./notification')
+    tasks : require('./tasks')
 }
