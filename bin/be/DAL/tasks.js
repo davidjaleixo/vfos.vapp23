@@ -34,7 +34,7 @@ module.exports = {
     },
     create: function (name, startDate, endDate, open, projectId, createdBy, place, cb) {
         let now = new Date().toUTCString();
-        
+
         let openStatus = now >= endDate ? false : true;
         storage('POST', "/tables/tasks/rows", [{ name: name, sdate: startDate, edate: endDate, open: openStatus, rescheduled: false, place: 0, idprojects: projectId, createdby: createdBy, place: place }], function (error, response, body) {
             if (!error) {
@@ -48,6 +48,19 @@ module.exports = {
         storage('DELETE', "/tables/tasks/rows?filter=idtask=" + taskId, {}, function (error, response, body) {
             if (!error) {
                 cb(false, { message: "Task is deleted" })
+            } else {
+                cb(true, "Relational Storage Component not responding");
+            }
+        })
+    },
+    update: function (taskId, newName, newSdate, newEdate, newPlace, cb) {
+        console.log("DAL:", taskId, newName, newSdate, newEdate, newPlace);
+        // if(newPlace == "" || newPlace == "null"){ newPlace = null}
+        if(newPlace == null){ newPlace = 'null'}
+        storage('PATCH', "/tables/tasks/rows?filter=idtask=" + taskId, { name: newName, sdate: "'" + newSdate + "'" , edate: "'" + newEdate + "'", place: newPlace }, function (error, response, body) {
+            console.log(body);
+            if (!error ) {
+                cb(false, { message: "Task is updated" })
             } else {
                 cb(true, "Relational Storage Component not responding");
             }

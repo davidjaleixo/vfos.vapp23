@@ -75,9 +75,11 @@ router.route('/notifications').delete(ctl.notification.delete);
 router.route('/tasks').get(ctl.tasks.get);
 router.route('/tasks').post(ctl.tasks.create);
 router.route('/tasks').delete(ctl.tasks.delete);
+router.route('/tasks').put(ctl.tasks.update);
 
 //delays
 router.route('/delays').get(ctl.delays.get);
 router.route('/delays').post(ctl.delays.create);
+router.route('/delays').put(ctl.delays.update);
 
 module.exports = router;

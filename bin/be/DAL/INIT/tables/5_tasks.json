@@ -14,12 +14,12 @@
         {
             "default": "now()",
             "name": "sdate",
-            "type": "TIMESTAMP"
+            "type": "date"
         },
         {
             "default": "now()",
             "name": "edate",
-            "type": "TIMESTAMP"
+            "type": "date"
         },
         {
             "allow_null": false,

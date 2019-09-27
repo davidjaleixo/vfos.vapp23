@@ -57,8 +57,18 @@ var _create = function (req, res) {
         res.status(422).json({ message: "Missing required fields" })
     }
 }
+var _update = function(req,res){
+    dal.delays.update(req.query.id, req.body.accept, function(err,answer){
+        if (!err) {
+            res.status(201).json(answer);
+        } else {
+            res.status(500).end();
+        }
+    })
+}
 
 module.exports = {
     get: _get,
-    create: _create
+    create: _create,
+    update: _update
 }

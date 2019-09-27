@@ -64,5 +64,14 @@ module.exports = {
                 cb(true, "Relational Storage Component not responding");
             }
         })
+    },
+    update: function (delayId, status, cb) {
+        storage('PATCH', "/tables/delays/rows?filter=iddelay=" + delayId, {accepted: status}, function (error, response, body) {
+            if (!error) {
+                cb(false, { message: "Delay is updated" })
+            } else {
+                cb(true, "Relational Storage Component not responding");
+            }
+        })
     }
 }
