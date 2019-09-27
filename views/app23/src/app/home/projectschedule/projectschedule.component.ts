@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService, AuthenticationService, TaskService, DelayService } from 'src/app/_services';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -65,7 +65,7 @@ export class ProjectscheduleComponent implements OnInit {
     ],
     opt_firstRowIsData: false,
     options: {
-      height: 400,
+      height: 200,
       gantt: {
         criticalPathEnabled: false,
         trackHeight: 30,
@@ -82,6 +82,7 @@ export class ProjectscheduleComponent implements OnInit {
   constructor(
     private projectservice: ProjectService,
     private router: ActivatedRoute,
+    private rou: Router,
     private authentication: AuthenticationService,
     private taskservice: TaskService,
     private fb: FormBuilder,
@@ -96,7 +97,7 @@ export class ProjectscheduleComponent implements OnInit {
     //get delays for this project
     this.getDelaysByProject();
   }
-  convertDate(date: string){
+  convertDate(date: string) {
     return new Date(date);
   }
   createTaskForm() {
@@ -177,9 +178,7 @@ export class ProjectscheduleComponent implements OnInit {
 
   ngOnInit() {
     $(document).ready(function () {
-      console.log("ready!**************************ready!**************************ready!**************************ready!**************************ready!**************************");
       $(document).on('click', '.pull-bs-canvas-right, .pull-bs-canvas-left', function () {
-        console.log("click");
         $('body').prepend('<div class="bs-canvas-overlay position-fixed w-100 h-100"></div>');
         if ($(this).hasClass('pull-bs-canvas-right'))
           $('.bs-canvas-right').addClass('mr-0');
@@ -222,7 +221,7 @@ export class ProjectscheduleComponent implements OnInit {
       //check if the introduced value is outside of the thresholds
       let result = confirm("By accepting a delay with HIGH impact, the project rescheduler must be opened. Do you want to open it?");
       if (result) {
-
+        this.rou.navigate(['/home/projects/'+this.router.snapshot.paramMap.get("idproject")+'/rescheduler/'+delayObj.iddelay]);
       } else {
 
       }
@@ -232,9 +231,46 @@ export class ProjectscheduleComponent implements OnInit {
   }
 
   reject(delayObj) {
-
+    this.delayservice.accept(delayObj.iddelay, false).subscribe(data => {
+      this.alert.success("Delay has been rejected");
+      this.getDelaysByProject();
+    })
   }
 
+  deleteTask(){
+    let stopit = false;
+    this.taskList.forEach((eachTask, idx, array) => {
+      if(eachTask.place == this.selectedTask.idtask){
+        this.alert.error("This task has dependent tasks. Delete them first")
+        stopit = true;
+      }
+      if(idx == array.length -1 && !stopit){
+        this.taskservice.delete(this.selectedTask.idtask).subscribe(data => {
+          this.alert.success("Task deleted");
+          this.getTaskByProject();
+        }, err => {
+          this.alert.error("Task not deleted");
+        })
+      }
+    });
+    
+  }
+  applyTaskChanges() {
+    // this.alert.warning("NOT IMPLEMENTED");
+    console.log(this.selectedTask);
+    this.taskservice.update(this.selectedTask).subscribe(data => {
+      this.alert.success("Task updated");
+      this.getTaskByProject();
+    }, err => {
+      this.alert.error("Task not updated");
+    })
+  }
+  parseDate(dateString: string): any {
+    if (dateString) {
+      return new Date(dateString).toDateString();
+    }
+    return null;
+  }
 
   public selectChart(event: ChartSelectEvent) {
     console.log("event click on chart");
@@ -244,8 +280,8 @@ export class ProjectscheduleComponent implements OnInit {
       this.taskList.forEach(eachTask => {
         if (eachTask.idtask == event.selectedRowValues[0]) {
           this.selectedTask = eachTask;
-          this.selectedTask.sdate = new Date(this.selectedTask.sdate);
-          this.selectedTask.edate = new Date(this.selectedTask.edate);
+          // this.selectedTask.sdate = this.selectedTask.sdate;
+          // this.selectedTask.edate = new Date(this.selectedTask.edate);
           $('body').prepend('<div class="bs-canvas-overlay position-fixed w-100 h-100"></div>');
 
           $('.bs-canvas-right').addClass('mr-0');

@@ -75,7 +75,6 @@
                     <input type="number" min="1" [(ngModel)]="impactdays" class="form-control" placeholder="Delay ID"
                       aria-label="Delay ID" aria-describedby="basic-addon1">
                   </div>
-                  {{impactdays}}
                 </div>
 
 
@@ -91,7 +90,6 @@
           </div>
           <!-- RESCHEDULED GANTT -->
           <div class="card-body">
-            Gantt Rescheduled here
             <google-chart [data]="rescheduledGantt" (chartReady)='ready($event)' (chartError)='error($event)'>
             </google-chart>
 

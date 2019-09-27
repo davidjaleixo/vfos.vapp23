@@ -12,4 +12,10 @@ export class TaskService {
     getAll(projectId) {
         return this.http.get(environment.apiUrl + '/tasks?project=' + projectId)
     }
+    update(taskObj: Object){
+        return this.http.put(environment.apiUrl + '/tasks', taskObj);
+    }
+    delete(id: String){
+        return this.http.delete(environment.apiUrl + '/tasks?id=' + id);
+    }
 }

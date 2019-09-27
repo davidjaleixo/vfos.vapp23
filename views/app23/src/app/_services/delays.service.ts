@@ -15,7 +15,10 @@ export class DelayService {
     getByTask(taskid) {
         return this.http.get(environment.apiUrl + '/delays?task=' + taskid)
     }
-    getById(id){
+    getById(id) {
         return this.http.get(environment.apiUrl + '/delays?id=' + id)
+    }
+    accept(id, status: boolean) {
+        return this.http.put(environment.apiUrl + '/delays?id=' + id, { accept: status })
     }
 }

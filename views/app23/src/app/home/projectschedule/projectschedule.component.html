@@ -8,45 +8,64 @@
       </ol>
     </nav>
 
-    <!-- button off-canvas -->
-
-    <a class="pull-bs-canvas-right d-block text-primary text-decoration-none">
-      <span class="display-3">&#9776;</span>
-      <h6>Pull Right Canvas</h6>
-    </a>
     <!-- Right off-canvas sidebar -->
     <div class="bs-canvas bs-canvas-right position-fixed bg-light h-100">
       <header class="bs-canvas-header p-3 bg-vfos overflow-auto">
         <button type="button" class="bs-canvas-close float-left close" aria-label="Close"><span aria-hidden="true"
             class="text-light">&times;</span></button>
-        <h4 class="d-inline-block text-light mb-0 float-right">{{selectedTask.name}}</h4>
+        <h4 class="d-inline-block text-light mb-0 float-right">{{selectedTask?.name}}</h4>
       </header>
 
-      <div class="bs-canvas-content px-3 py-5">
+      <div class="bs-canvas-content px-3 py-5" *ngIf="selectedTask">
         <!-- Editor sidebar content -->
-        {{selectedTask | json}}
         <!-- NAME -->
+        <!-- delete task -->
+        <button (click)="deleteTask()" class=" float-right btn btn-sm btn-danger mb-3"><i
+          class="fa fa-trash"></i> Delete Task</button>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="taskNameeditor">Name</span>
           </div>
-          <input type="text" required class="form-control" [ngModel]="selectedTask?.name" placeholder="task name"
+          <input type="text" required class="form-control" [(ngModel)]="selectedTask.name" placeholder="task name"
             aria-label="Task editor name" aria-describedby="basic-addon1">
         </div>
+        <!-- {{selectedTask.name}} -->
         <!-- start date -->
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="startdateeditor">Start Date</span>
           </div>
-          <input class="form-control" required type="date" [ngModel]="selectedTask?.sdate">
+          <!-- <input class="form-control" required type="date" [ngModel]="selectedTask.sdate | date:'yyyy-MM-dd'" (input)="selectedTask.sdate=parseDate($event.target.value)"> -->
+          <input class="form-control" required type="date" [ngModel]="selectedTask.sdate | date:'yyyy-MM-dd'" (input)="selectedTask.sdate=$event.target.value">
         </div>
+        {{selectedTask.sdate}}
         <!-- end date -->
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="startdateeditor">End Date</span>
           </div>
-          <input class="form-control" required type="date" [ngModel]="selectedTask?.edate">
+          <input class="form-control" required type="date" [ngModel]="selectedTask.edate | date:'yyyy-MM-dd'" (input)="selectedTask.edate=$event.target.value">
         </div>
+        {{selectedTask.edate}}
+        <!-- after start dep -->
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="enddate">Dependency</span>
+          </div>
+
+          <select class="form-control" required id="depEditor" required [(ngModel)]="selectedTask.place" >
+            <option disabled value> Select the task </option>
+            <option value="null"> None </option>
+            <option [ngValue]="avtask.idtask" *ngFor="let avtask of taskList" required>{{avtask.name}}
+            </option>
+          </select>
+          
+        </div>
+        {{selectedTask.place}}
+        
+        <!-- apply changes -->
+        <button (click)="applyTaskChanges()" class=" float-right btn btn-sm btn-vfos"><i
+          class="fa fa-save"></i> Apply changes</button>
       </div>
     </div>
 
@@ -59,10 +78,6 @@
       <div class="card-body">
         <google-chart *ngIf="taskList.length > 0" [data]="ganttChart" (chartSelect)='selectChart($event)'>
         </google-chart>
-
-
-
-        {{selectedTask | json}}
         <div *ngIf="taskList.length == 0">
           <h1 class="display-4">Welcome to your project scheduler</h1>
           <p class="lead">There is no tasks created</p>
@@ -108,8 +123,8 @@
               <td>{{delay.description}}</td>
               <td *ngIf="delay.impactlevel == 1">LOW</td>
               <td *ngIf="delay.impactlevel == 2">HIGH</td>
-              <td *ngIf="delay.accepted">Accepted</td>
-              <td *ngIf="delay.accepted == false">Recused</td>
+              <td *ngIf="delay.accepted == 't'">Accepted</td>
+              <td *ngIf="delay.accepted == 'f'">Rejected</td>
               <td *ngIf="delay.accepted == null">Pending</td>
               <td>{{delay.username}}</td>
               <td>{{delay.createdat | date:'dd/MM/yyyy'}}</td>
@@ -151,7 +166,7 @@
               <span class="input-group-text" id="taskName">Name</span>
             </div>
             <input type="text" required [ngClass]="{ 'is-invalid': submitted && f.name.errors }" class="form-control"
-              formControlName="name" placeholder="Project name" aria-label="Task name" aria-describedby="basic-addon1">
+              formControlName="name" placeholder="Task name" aria-label="Task name" aria-describedby="basic-addon1">
             <div *ngIf="submitted && f.name.invalid" class="invalid-feedback">
               <div *ngIf="f.name.errors.required">Task name is required</div>
             </div>

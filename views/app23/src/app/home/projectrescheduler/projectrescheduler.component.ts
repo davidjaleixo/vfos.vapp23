@@ -44,7 +44,7 @@ export class ProjectreschedulerComponent implements OnInit {
     dataTable: [],
     opt_firstRowIsData: false,
     options: {
-      height: 300,
+      height: 200,
       gantt: {
         criticalPathEnabled: false,
         trackHeight: 30,
@@ -77,7 +77,7 @@ export class ProjectreschedulerComponent implements OnInit {
     ],
     opt_firstRowIsData: false,
     options: {
-      height: 400,
+      height: 200,
       gantt: {
         criticalPathEnabled: false,
         trackHeight: 30,
@@ -184,7 +184,25 @@ export class ProjectreschedulerComponent implements OnInit {
   }
 
   saveReschedule(){
-    console.log("TODO");
+    this.alert.warning("NOT IMPLEMENTED YET");
+    let result = confirm("Are you sure? This can't be undone.")
+    if(result){
+      this.taskList.forEach((eachTask,idx,arr) => {
+        this.taskservice.update(eachTask).subscribe(data => {
+          this.alert.success("Task update");
+        })
+        if(idx == arr.length -1){
+          this.delayservice.accept(this.router.snapshot.paramMap.get("iddelay"),true).subscribe(data => {
+            this.alert.success("Delay was accepted. Project's task were rescheduled")
+          }, err => {
+            this.alert.error("Error");
+          })
+        }
+      })
+
+    }else{
+      return
+    }
   }
 
   updateRescheduleChart() {
@@ -220,7 +238,7 @@ export class ProjectreschedulerComponent implements OnInit {
     this.taskList.forEach((eachTask, idx, arr) => {
       //affect the impactedTask
       if (eachTask.idtask == affectedTaskId && init) {
-
+        this.alert.info("Rescheduling task " + eachTask.name + "...");
         this.taskList[idx].edate = this.addDays(new Date(this.taskList[idx].edate), this.impactdays)
         // if(!init){
         //   this.taskList[idx].sdate = this.addDays(this.taskList[idx].sdate, this.impactdays)
@@ -232,6 +250,7 @@ export class ProjectreschedulerComponent implements OnInit {
         this.taskList[idx].edate = this.addDays(new Date(this.taskList[idx].edate), this.impactdays);
         //iterate based on this hint
         this.reschedule(eachTask.idtask, false);
+        this.alert.info("Rescheduling task " + eachTask.name + "...");
       }
 
       if (idx == arr - 1) {
