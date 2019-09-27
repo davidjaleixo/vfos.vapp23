@@ -1,0 +1,294 @@
+<section>
+  <div class="container" style="padding-top: 25px;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/home/landing">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/home/projects">Projects</a></li>
+        <li class="breadcrumb-item" *ngIf="project"><a
+            routerLink="/home/projects/{{project.idprojects}}">{{project.name}}</a> </li>
+        <li class="breadcrumb-item active ">Dashboard</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+<div class="container">
+  <h3>Dashboard</h3>
+
+  <div class="row mb-3">
+    <!-- top cards -->
+    <div class="col-md-4 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">PAR issued</h5>
+          <p class="card-text">{{pars.length}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">RME issued</h5>
+          <p class="card-text" *ngIf="rmes">{{rmes.length}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Approval %</h5>
+
+          <p class="card-text" *ngIf="rmes && approvedrmes">{{approvedrmes / rmes.length | percent:'2.2-2'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xl-6 col-lg-7">
+      <div class="card mb-4" *ngIf="pars.length != 0">
+        <!-- Card Header - Dropdown -->
+
+        <div class="card-header ">
+          <h6 class="m-0 font-weight-bold text-primary">Aquisition review</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                  PAR #
+                </th>
+                <th>
+                  Qtd
+                </th>
+                <th>
+                  Overall reception
+                </th>
+
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let par of pars">
+
+
+                <td>{{ par.idpars }}</td>
+                <td>{{ par.qtd }}</td>
+                <td>
+                  <!-- {{par.totalreceived}}, {{par.totalitems}} -->
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-striped" role="progressbar" [ngClass]="{ 'bg-danger': par.received > +par.qtd }"
+                      [style.width.%]="(par.received/par.qtd)*100" aria-valuenow="25" aria-valuemin="0"
+                      aria-valuemax="100"> {{ par.received/+par.qtd | percent:'2.2-2' }}</div>
+                  </div>
+                </td>
+                <!-- menuoptions -->
+                <td>
+                  <div class="btn-group" role="group" aria-label="optionsmenu">
+                    <button  disabled type="button" class="btn btn-sm btn-outline-secondary" href="#" data-toggle="modal"
+                      data-target="#infoparmodal" (click)="showParInfo(par.idpars)"><i class="fa fa-search"
+                        aria-hidden="true"></i>
+                      PAR</button>
+                    <button disabled type="button" class="btn btn-sm btn-outline-secondary"><i class="fa fa-search"
+                        aria-hidden="true"></i>
+                      RME</button>
+                  </div>
+                </td>
+
+              </tr>
+            </tbody>
+
+          </table>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-5">
+
+      <!-- RME -->
+      <div class="card mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header ">
+          <h6 class="m-0 font-weight-bold text-primary">RME to be confirmed</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+          <p *ngIf="rmestobe.length == 0">No new RME requiring your attention</p>
+
+          <table class="table" *ngIf="rmestobe.length != 0">
+            <thead>
+              <tr>
+                <th>
+                  PAR
+                </th>
+
+                <th>
+                  RMES
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rme of rmestobe ">
+
+
+                <td style="vertical-align: middle">{{ rme.parid }}</td>
+
+                <td>
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>#</th>
+                        <th>User</th>
+                        <th>Qtd</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let rmes of rme.rmes">
+                        <td>{{rmes.idrmes}}</td>
+                        <td>{{rmes.username}}</td>
+                        <td>{{rmes.rmeqtd}}</td>
+                        <!-- menuoptions -->
+                        <td>
+                          <button type="button" class="btn btn-sm btn-vfos" data-target="#approverme"
+                            data-toggle="modal" href="#" (click)="approveRme(rmes)"><i class="fa fa-search"
+                              aria-hidden="true"></i></button>
+
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+
+
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- INFO PAR MODAL -->
+<!-- <div class="modal fade center" id="infoparmodal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h4 class="modal-title">PAR info</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid">
+
+
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">ID: {{parinfo.idpars}}</h5>
+              <p class="card-text">Status: {{parinfo.status}}</p>
+            </div>
+            <div class="card-body">
+              
+              <table class="table table-striped" [mfData]="parinfoitems" #mf="mfDataTable" [mfRowsOnPage]="5">
+                <thead>
+                  <tr>
+                    <th>
+                      <mfDefaultSorter by="description">Name</mfDefaultSorter>
+                    </th>
+                    <th>
+                      <mfDefaultSorter by="itemqtd">Qtd</mfDefaultSorter>
+                    </th>
+                    <th>
+                      <mfDefaultSorter by="name">Type</mfDefaultSorter>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of mf.data">
+
+
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.itemqtd }}</td>
+                    <td>{{ item.name }}</td>
+
+
+
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan=3>
+                      <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+<!-- INFO PAR MODAL END -->
+
+
+<!-- APPROVE RME MODAL END -->
+<div class="modal fade center" id="approverme" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content" *ngIf="approvalrme">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">RME Confirmation</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid">
+
+
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">PAR ID: {{approvalrme.idpars}}</h5>
+            </div>
+            <div class="card-body">
+              <label for="qtdapproved">Quantity</label>
+              <input type="number" class="form-control" [(ngModel)]="approvalrme.rmeqtd" disabled />
+              <label for="exampleFormControlTextarea1">{{approvalrme.username}} comment</label>
+              <textarea class="form-control" id="exampleFormControlTextarea1" disabled rows="3"
+                [(ngModel)]="approvalrme.statusdescription"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <label for="exampleFormControlTextarea1">Comment your decision</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+          [(ngModel)]="approvalrme.approvaldecision"></textarea>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button (click)="confirmRme()" class="btn btn-vfos" data-dismiss="modal"><i class="fa fa-check"></i>
+          Confirm</button>
+        <button (click)="discardRme()" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-minus-circle"></i>
+          Discard</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- APPROVE RME MODAL END -->

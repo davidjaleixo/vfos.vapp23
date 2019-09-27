@@ -1,0 +1,216 @@
+<section>
+  <div class="container" style="padding-top: 25px;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/home/landing">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/home/projects">Projects</a></li>
+        <li class="breadcrumb-item active " *ngIf="project">{{project.name}}</li>
+      </ol>
+    </nav>
+
+    <!-- button off-canvas -->
+
+    <a class="pull-bs-canvas-right d-block text-primary text-decoration-none">
+      <span class="display-3">&#9776;</span>
+      <h6>Pull Right Canvas</h6>
+    </a>
+    <!-- Right off-canvas sidebar -->
+    <div class="bs-canvas bs-canvas-right position-fixed bg-light h-100">
+      <header class="bs-canvas-header p-3 bg-vfos overflow-auto">
+        <button type="button" class="bs-canvas-close float-left close" aria-label="Close"><span aria-hidden="true"
+            class="text-light">&times;</span></button>
+        <h4 class="d-inline-block text-light mb-0 float-right">{{selectedTask.name}}</h4>
+      </header>
+
+      <div class="bs-canvas-content px-3 py-5">
+        <!-- Editor sidebar content -->
+        {{selectedTask | json}}
+        <!-- NAME -->
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="taskNameeditor">Name</span>
+          </div>
+          <input type="text" required class="form-control" [ngModel]="selectedTask?.name" placeholder="task name"
+            aria-label="Task editor name" aria-describedby="basic-addon1">
+        </div>
+        <!-- start date -->
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="startdateeditor">Start Date</span>
+          </div>
+          <input class="form-control" required type="date" [ngModel]="selectedTask?.sdate">
+        </div>
+        <!-- end date -->
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="startdateeditor">End Date</span>
+          </div>
+          <input class="form-control" required type="date" [ngModel]="selectedTask?.edate">
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-header">
+        Tasks schedule
+        <button href="#newTaskModal" data-toggle="modal" class=" float-right btn btn-sm btn-vfos"><i
+            class="fa fa-plus"></i> Add new task</button>
+      </div>
+      <div class="card-body">
+        <google-chart *ngIf="taskList.length > 0" [data]="ganttChart" (chartSelect)='selectChart($event)'>
+        </google-chart>
+
+
+
+        {{selectedTask | json}}
+        <div *ngIf="taskList.length == 0">
+          <h1 class="display-4">Welcome to your project scheduler</h1>
+          <p class="lead">There is no tasks created</p>
+          <hr class="my-4">
+          <p>Please create your first task and let your project start!</p>
+          <p class="lead">
+            <a class="btn btn-primary btn-lg" href="#newTaskModal" data-toggle="modal">Create your first task</a>
+          </p>
+        </div>
+      </div>
+
+      <div *ngIf="showSelectedPane" class="card-body" id="taskSelectedPane">
+        <h1 class="display-4">Welcome to your project scheduler</h1>
+        <p class="lead">There is no tasks created</p>
+      </div>
+
+      <!-- <google-chart [data]="timelineChart"></google-chart> -->
+      <div class="card-header">
+        Delays historic
+      </div>
+      <div class="card-body" *ngIf="delaysList.length == 0">
+        <h1 class="display-4">Seems that there are no delays</h1>
+        <p class="lead">Your project is doing great</p>
+      </div>
+      <div class="card-body" *ngIf="delaysList.length != 0">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Task</th>
+              <th scope="col">Description</th>
+              <th scope="col">Impact Level</th>
+              <th scope="col">Status</th>
+              <th scope="col">Created By</th>
+              <th scope="col">Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let delay of delaysList">
+              <th scope="row">{{delay.iddelay}}</th>
+              <td>{{delay.name}}</td>
+              <td>{{delay.description}}</td>
+              <td *ngIf="delay.impactlevel == 1">LOW</td>
+              <td *ngIf="delay.impactlevel == 2">HIGH</td>
+              <td *ngIf="delay.accepted">Accepted</td>
+              <td *ngIf="delay.accepted == false">Recused</td>
+              <td *ngIf="delay.accepted == null">Pending</td>
+              <td>{{delay.username}}</td>
+              <td>{{delay.createdat | date:'dd/MM/yyyy'}}</td>
+              <td>
+                <button *ngIf="!delay.accepted" class="btn btn-success btn-sm" (click)="accept(delay)">
+                  <i class="fa fa-check"></i> Accept
+                </button>
+                <button *ngIf="!delay.accepted" class="btn btn-danger btn-sm" (click)="reject(delay)">
+                  <i class="fa fa-times"></i> Reject
+                </button>
+                <button disabled *ngIf="delay.accepted || delay.accepted == false" class="btn btn-secundary btn-sm">
+                  <i class="fa fa-times"></i> Dispatched
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- new task modal -->
+<form [formGroup]="newTaskForm" (ngSubmit)="onSubmit()" novalidate>
+  <div id="newTaskModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">New Task</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- TASK NAME -->
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="taskName">Name</span>
+            </div>
+            <input type="text" required [ngClass]="{ 'is-invalid': submitted && f.name.errors }" class="form-control"
+              formControlName="name" placeholder="Project name" aria-label="Task name" aria-describedby="basic-addon1">
+            <div *ngIf="submitted && f.name.invalid" class="invalid-feedback">
+              <div *ngIf="f.name.errors.required">Task name is required</div>
+            </div>
+          </div>
+          <!-- TASK START DATE -->
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="startdate">Start Date</span>
+            </div>
+            <input class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.startdate.errors }"
+              type="date" formControlName="startdate" id="example-date-input">
+            <div *ngIf="submitted && f.startdate.invalid" class="invalid-feedback">
+              <div *ngIf="f.startdate.errors.required">Start Date is required</div>
+            </div>
+          </div>
+          <!-- TASK END DATE -->
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="enddate">End Date</span>
+            </div>
+            <input class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.enddate.errors }" type="date"
+              formControlName="enddate" id="enddate-input">
+            <div *ngIf="submitted && f.enddate.invalid" class="invalid-feedback">
+              <div *ngIf="f.enddate.errors.required">End Date is required</div>
+            </div>
+            <div *ngIf="submitted && newTaskForm.invalid">
+              <div>The task must have a start date before the due date</div>
+            </div>
+          </div>
+
+          <!-- TASK DEPENDECY -->
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="enddate">After finish</span>
+            </div>
+
+            <select class="form-control" required [ngClass]="{ 'is-invalid': submitted && !validateDependecy() }"
+              formControlName="after" id="supplier" required>
+              <option disabled selected value> Select the task </option>
+              <option selected value="None"> None </option>
+              <option [ngValue]="avtask" *ngFor="let avtask of taskList" required>{{avtask.name}}
+              </option>
+            </select>
+            <div *ngIf="submitted && !validateDependecy()" class="invalid-feedback">
+              <div>The task must have a start date after this dependency the due date</div>
+            </div>
+
+
+          </div>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-vfos">Save</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</form>
+<!-- new task modal END -->

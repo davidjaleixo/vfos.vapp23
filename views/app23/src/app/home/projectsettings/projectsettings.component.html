@@ -1,0 +1,274 @@
+<section>
+  <div class="container" style="padding-top: 25px;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/home/landing">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/home/projects">Projects</a></li>
+        <li class="breadcrumb-item"><a routerLink="/home/projects/{{project.idprojects}}">{{project.name}}</a></li>
+        <li class="breadcrumb-item active">Settings</li>
+      </ol>
+    </nav>
+    <!-- Settings section -->
+    <div class="card mb-3">
+      <div class="card-header">
+        General Settings
+        <button class=" float-right btn btn-sm btn-vfos" (click)="deleteProject(project.idprojects)"><i
+            class="fa fa-trash"></i> Delete project</button>
+      </div>
+      <div class="card-body">
+        <table class="table">
+
+          <tbody>
+            <tr>
+              <th>Name</th>
+              <th>
+                <input type="text" [(ngModel)]="project.name" class="form-control" placeholder="Name"
+                  aria-label="Project Name">
+              </th>
+              <th>
+                <button class="btn btn-sm btn-secondary" (click)="updateName(project.idprojects)">Update</button>
+              </th>
+            </tr>
+            <tr>
+              <th>Description</th>
+              <th>
+                <input type="text" [(ngModel)]="project.description" class="form-control" placeholder="Description"
+                  aria-label="Project description">
+              </th>
+              <th>
+                <button class="btn btn-sm btn-secondary" (click)="updateDescription(project.idprojects)">Update</button>
+              </th>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <th>
+                <span *ngIf="project.status == 't'" class="badge badge-success">ongoing</span>
+                <span *ngIf="project.status != 't'" class="badge badge-danger">stopped</span>
+              </th>
+              <th>
+                <button *ngIf="project.status == 't'" class="btn btn-sm btn-secondary"
+                  (click)="updateStatus(project.idprojects)"> Stop</button>
+                <button *ngIf="project.status != 't'" class="btn btn-sm btn-secondary"
+                  (click)="updateStatus(project.idprojects)">Start</button>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+    </div>
+    <!-- Settings section END -->
+    <!-- <div class="card mb-3">
+      <div class="card-header">
+        Approved Materials
+        <button class="float-right btn btn-sm btn-vfos" data-target="#addmat" data-toggle="modal">
+          <i class="fa fa-plus"></i> Add</button>
+      </div>
+      <div class="card-body">
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Created by</th>
+              <th scope="col">Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let material of materials">
+              <td>{{material.name}}</td>
+              <td *ngIf="material.createdby.length >=10">{{material.createdby}}</td>
+              <td *ngIf="material.createdby.length < 10"><img style="height:20px" src="assets/img/loading.gif"
+                  alt="loading"></td>
+              <td>{{material.createdat}}</td>
+              <td>
+                <button class="btn btn-warning btn-sm" (click)="viewMatLinks(material.idmaterials)" data-target="#viewmat" data-toggle="modal">
+                  <i class="fa fa-archive"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="deleteMat(material.idmaterials)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div> -->
+   
+
+    <!-- USERS START -->
+    <div class="card mb-5">
+      <div class="card-header">
+        Users
+        <button class="float-right btn btn-sm btn-vfos" data-target="#adduser" data-toggle="modal">
+          <i class="fa fa-plus"></i> Add</button>
+      </div>
+      <div class="card-body">
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Role</th>
+              <th scope="col">Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{user.username}}</td>
+              <td>
+                <span *ngIf="user.idroles=='1'" class="badge badge-info">Contractor</span>
+                <span *ngIf="user.idroles=='2'" class="badge badge-success">Admin</span>
+                <span *ngIf="user.idroles=='3'" class="badge badge-warning">Provider</span>
+              </td>
+              <td>
+                <button class="btn btn-danger btn-sm" (click)="deleteUser(user.idusers)">
+                  <i class="fa fa-trash"></i>
+                </button>
+                <!-- <button class="btn btn-warning btn-sm" (click)="idCheck(user.idaccounts, user.username)"
+                  data-target="#editRoles" data-toggle="modal">
+                  <i class="fa fa-pencil-square-o"></i>
+                </button> -->
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- USERS END -->
+  </div>
+</section>
+
+<!-- View Material Links Modal -->
+<div id="viewmat" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" >
+    <div class="modal-content">
+      <div class="modal-header" *ngIf="viewMat">
+        <h3>{{viewMat.name}}</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      </div>
+      <div class="modal-body">
+        <table class="table" *ngIf="viewMat">
+          <tbody>
+            <tr *ngFor="let link of viewMat.links">
+              <th scope="row">{{link.idlink}}</th>
+              <td>{{link.description}}</td>
+              <td><a href="{{link.link}}">Link</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- New Material Modal -->
+<div id="addmat" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add material type</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Name</span>
+              </div>
+              <input type="text" class="form-control" [(ngModel)]="newMaterial.name" placeholder="Material name"
+                aria-label="Material name">
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                Specification links
+              </div>
+              <div class="card-body">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Description</span>
+                  </div>
+                  <input type="text" class="form-control" [(ngModel)]="newMaterialLink.description"
+                    placeholder="Link description" aria-label="Material name">
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Link</span>
+                  </div>
+                  <input type="text" class="form-control" [(ngModel)]="newMaterialLink.link" placeholder="Link URL"
+                    aria-label="Material name">
+                </div>
+                <button class="btn btn-vfos" (click)="addMaterialLink()">Add</button>
+              </div>
+              <hr/>
+              <div class="card-body">
+                <table class="table">
+                  <tbody>
+                    <tr *ngFor="let link of newMaterial.links">
+                      <th scope="row">{{link.id}}</th>
+                      <td>{{link.description}}</td>
+                      <td><a href="{{link.link}}">Link</a></td>
+                      <td>
+                        <button class="btn btn-danger btn-sm" (click)="deleteMatLink(link.id)">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="createMaterial()" data-dismiss="modal" class="btn btn-vfos">Add Material</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--End Modal-->
+
+<!--New user Modal -->
+<div id="adduser" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add user</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <form [formGroup]="newUserForm">
+            <label for="userselect" id="idAccount">Select user</label>
+            <!-- <select class="form-control" formControlName="newuser" id="userselect">
+              <option [ngValue]="avuser" *ngFor="let avuser of availableusers | filter: {idroles: 2}">
+                {{avuser.username}} </option>
+            </select> -->
+
+            <select class="form-control" formControlName="newuser" id="userselect">
+              <optgroup *ngFor="let grp of groupedusers" label="{{grp.group}}">
+                <option [ngValue]="avuser" *ngFor="let avuser of grp.items">
+                  {{avuser.username}} </option>
+              </optgroup>
+            </select>
+
+
+
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="addUser()" data-dismiss="modal" class="btn btn-vfos">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

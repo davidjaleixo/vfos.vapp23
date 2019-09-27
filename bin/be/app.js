@@ -36,7 +36,7 @@ app.use(expressValidator());
 require('./passport');
 app.use(passport.initialize());
 
-
+console.log("date.toUTCstring", new Date().toUTCString());
 
 //set the need of tokens for authentication unless the following paths
 app.use('/api', jwt({

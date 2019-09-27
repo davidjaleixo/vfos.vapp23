@@ -1,0 +1,105 @@
+<section>
+  <div class="container" style="padding-top: 25px;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/home/landing">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/home/projects">Projects</a></li>
+        <li class="breadcrumb-item active " *ngIf="project">{{project.name}}</li>
+      </ol>
+    </nav>
+
+    <div class="card mb-3">
+      <div class="card-header">
+        Project schedule
+      </div>
+      <div class="card-body">
+        <google-chart *ngIf="taskList.length > 0" [data]="ganttChart"></google-chart>
+
+      </div>
+      <div class="card-header">
+        Resheculder
+      </div>
+      <div class="card-body">
+
+        <div class="card mb-3">
+          <div class="card-header">
+            Settings
+            <button data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false"
+              aria-controls="collapseSettings" class=" float-right btn btn-sm btn-outline-primary"><i
+                class="fa fa-plus"></i></button>
+          </div>
+          <div class="collapse" id="collapseSettings">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6 col-md-6">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="delayDescription">Delay ID</span>
+                    </div>
+                    <input type="text" disabled class="form-control" placeholder="Delay ID" aria-label="Delay ID"
+                      [(ngModel)]="delay.iddelay" aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="delayDescription">Impact</span>
+                    </div>
+                    <input type="text" disabled class="form-control" placeholder="Delay Impact" aria-label="Delay ID"
+                      [(ngModel)]="delay.impactlevel" aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="delayDescription">Descripton</span>
+                    </div>
+                    <input type="text" disabled class="form-control" placeholder="Delay description"
+                      [(ngModel)]="delay.description" aria-label="Task name" aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="delayDescription">Related Task</span>
+                    </div>
+                    <input type="text" disabled class="form-control" placeholder="Related task" [(ngModel)]="delay.name"
+                      aria-label="Delay ID" aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="delayDescription">Impact days</span>
+                    </div>
+                    <input type="number" min="1" [(ngModel)]="impactdays" class="form-control" placeholder="Delay ID"
+                      aria-label="Delay ID" aria-describedby="basic-addon1">
+                  </div>
+                  {{impactdays}}
+                </div>
+
+
+
+
+              </div>
+              <button class="btn btn-sm btn-vfos" (click)="reschedule(delay.idtask, true)">Reschedule</button>
+              <button class="btn btn-sm btn-primary" (click)="updateRescheduleChart()">Refresh rescheduled
+                gantt</button>
+              <button class="btn btn-sm btn-success" (click)="saveReschedule()">Save reschedule</button>
+            </div>
+
+          </div>
+          <!-- RESCHEDULED GANTT -->
+          <div class="card-body">
+            Gantt Rescheduled here
+            <google-chart [data]="rescheduledGantt" (chartReady)='ready($event)' (chartError)='error($event)'>
+            </google-chart>
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</section>

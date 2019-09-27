@@ -1,0 +1,129 @@
+<section>
+  <div class="container" style="padding-top: 25px;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/home/landing">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/home/projects">Projects</a></li>
+        <li class="breadcrumb-item active " *ngIf="project">{{project.name}}</li>
+      </ol>
+    </nav>
+
+    <div class="rows">
+      <!--Slump card-->
+      <div class="card border-vfos mb-5 " style="width: 20rem;">
+        <img class="card-img-top" src="assets/img/tasks_header.png" alt="tasks image">
+        <div class="card-body">
+          <h5 class="card-title">On Site Manager</h5>
+          <p class="card-text">Control all the tasks in your construction site.</p>
+          <!--a href="#" class="btn btn-primary">New</a-->
+          <!-- <button *ngIf="user.role==1||user.role==2" data-toggle="modal" data-target="#slumpTestModal"
+            class="btn btn-primary center-block">New</button> -->
+          <a *ngIf="user.role==1||user.role==2" href="#" class="card-link " routerLink="schedule"
+            class="card-link">Project Schedule</a>
+          <a *ngIf="user.role==1||user.role==2" href="#" data-toggle="modal" data-target="#newDelaymodal"
+            class="card-link">New Delay</a>
+          <!-- <a *ngIf="user.role==1||user.role==2" class="card-link" routerLink="dashboard" href="#">Dashboard</a> -->
+          <!-- <a *ngIf="user.role==2" class="card-link " routerLink="slumphistory" href="#">History</a> -->
+
+        </div>
+      </div>
+    </div>
+    <!--End Slump card-->
+
+
+  </div>
+</section>
+<!--MODAL-->
+<div class="modal fade center" id="slumpTestModal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- loading spinner start -->
+      <ngx-spinner [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium">
+        <p class="loading">Loading prediction</p>
+      </ngx-spinner>
+      <!-- loading spinner ends -->
+
+
+    </div>
+  </div>
+</div>
+
+<!-- NEW DELAY MODAL START -->
+<form [formGroup]="newDelayForm" (ngSubmit)="onSubmit()" novalidate>
+  <div class="modal fade center" id="newDelaymodal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">New delay</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+
+
+          <!-- DELAY DESCRIPTION -->
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="delaycomment">Description</span>
+            </div>
+            <input type="text" required [ngClass]="{ 'is-invalid': submitted && f.description.errors }"
+              class="form-control" formControlName="description" placeholder="Delay description"
+              aria-label="Delay description" aria-describedby="basic-addon1">
+            <div *ngIf="submitted && f.description.invalid" class="invalid-feedback">
+              <div *ngIf="f.description.errors.required">Field is required</div>
+            </div>
+          </div>
+          <!-- DELAY TASK -->
+          <div class="alert alert-danger" role="alert" *ngIf="taskList.length == 0">
+            This requests at least one task in the project
+          </div>
+          <div class="input-group mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="enddate">Task</span>
+            </div>
+
+            <select class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.task.erros }"
+              formControlName="task" id="task" required>
+              <option disabled selected value> Select the task </option>
+              <option [ngValue]="avtask" *ngFor="let avtask of taskList" required>{{avtask.name}}
+              </option>
+            </select>
+            <div *ngIf="submitted && f.task.invalid" class="invalid-feedback">
+              <div *ngIf="f.task.errors.required">Field is required</div>
+            </div>
+
+          </div>
+          <!-- DELAY IMPACT LEVEL -->
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="enddate">Impact Level</span>
+            </div>
+
+            <select class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.impact.errors }"
+              formControlName="impact" id="supplier" required>
+              <option disabled selected value> Select the impact </option>
+              <option value="2"> HIGH </option>
+              <option value="1"> LOW </option>
+            </select>
+
+            <div *ngIf="submitted && f.impact.invalid" class="invalid-feedback">
+              <div *ngIf="f.impact.errors.required">Field is required</div>
+            </div>
+          </div>
+
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-vfos"><i class="fa fa-save"></i> Send</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</form>
+<!-- NEW DELAY MODAL END -->

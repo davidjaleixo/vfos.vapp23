@@ -4,7 +4,9 @@
   "description": "OnSiteManager",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "boot": "npm install && cd views/app25 && npm i && ng build --prod --aot --deploy-url=\"/app25/\" --base-href=\"/app25/\" ",
+    "start-be": "PORT=4201 node ./bin/be/index.js",
+    "start": "concurrently --kill-others \"npm run start-be\""
   },
   "dependencies": {
     "@angular/cli": "6.1.1",
