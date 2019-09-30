@@ -23,6 +23,7 @@ export class ProjectreschedulerComponent implements OnInit {
   taskList: any;
   delaysList: any;
   delay: any;
+  showReschedule: boolean = false;
 
 
   public timelineChart: GoogleChartInterface = {
@@ -184,7 +185,6 @@ export class ProjectreschedulerComponent implements OnInit {
   }
 
   saveReschedule(){
-    this.alert.warning("NOT IMPLEMENTED YET");
     let result = confirm("Are you sure? This can't be undone.")
     if(result){
       this.taskList.forEach((eachTask,idx,arr) => {
@@ -227,6 +227,7 @@ export class ProjectreschedulerComponent implements OnInit {
       if (idx == arr.length - 1) {
         this.rescheduledGantt.dataTable = taskListen
         console.log(this.rescheduledGantt);
+        this.showReschedule = true;
         this.rescheduledGantt.component.draw();
       }
     })

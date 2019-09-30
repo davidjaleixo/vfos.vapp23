@@ -18,7 +18,7 @@
           <!--a href="#" class="btn btn-primary">New</a-->
           <!-- <button *ngIf="user.role==1||user.role==2" data-toggle="modal" data-target="#slumpTestModal"
             class="btn btn-primary center-block">New</button> -->
-          <a *ngIf="user.role==1||user.role==2" href="#" class="card-link " routerLink="schedule"
+          <a *ngIf="user.role==2" href="#" class="card-link " routerLink="schedule"
             class="card-link">Project Schedule</a>
           <a *ngIf="user.role==1||user.role==2" href="#" data-toggle="modal" data-target="#newDelaymodal"
             class="card-link">New Delay</a>

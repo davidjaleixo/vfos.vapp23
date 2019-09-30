@@ -26,7 +26,7 @@
             Settings
             <button data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false"
               aria-controls="collapseSettings" class=" float-right btn btn-sm btn-outline-primary"><i
-                class="fa fa-plus"></i></button>
+                class="fa fa-plus"></i> expand</button>
           </div>
           <div class="collapse" id="collapseSettings">
             <div class="card-body">
@@ -89,7 +89,7 @@
 
           </div>
           <!-- RESCHEDULED GANTT -->
-          <div class="card-body">
+          <div class="card-body" *ngIf="showReschedule">
             <google-chart [data]="rescheduledGantt" (chartReady)='ready($event)' (chartError)='error($event)'>
             </google-chart>
 
