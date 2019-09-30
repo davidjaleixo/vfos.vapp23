@@ -86,7 +86,7 @@
               <span class="input-group-text" id="enddate">Task</span>
             </div>
 
-            <select class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.task.erros }"
+            <select class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.task.errors }"
               formControlName="task" id="task" required>
               <option disabled selected value> Select the task </option>
               <option [ngValue]="avtask" *ngFor="let avtask of taskList" required>{{avtask.name}}
