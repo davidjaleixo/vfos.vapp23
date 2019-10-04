@@ -117,6 +117,25 @@ export class ProjectscheduleComponent implements OnInit {
       console.log(this.delaysList);
     })
   }
+
+  diffInDates(firstDate: Date, lastDate: Date) {
+    let now = new Date();
+    
+    if(now.getTime() > lastDate.getTime() && now.getTime() > firstDate.getTime()){
+      return 100;
+    }
+    if(now.getTime() < lastDate.getTime() && now.getTime() < firstDate.getTime()){
+      return 0;
+    }
+    
+    let diff = ((lastDate.getTime() - firstDate.getTime()) / (1000 * 3600 * 24)) + 1;
+
+    let diffNow = ((now.getTime() - firstDate.getTime()) / (1000 * 3600 * 24));
+    console.log("diff:", diff, "diffNow", diffNow);
+    return Math.ceil(diffNow * 100 / diff);
+  }
+
+
   getTaskByProject() {
     this.taskservice.getAll(this.router.snapshot.paramMap.get("idproject")).subscribe(data => {
       console.log(data);
@@ -136,10 +155,11 @@ export class ProjectscheduleComponent implements OnInit {
         { label: 'Deps', type: 'string' }
       ]);
       this.transform.forEach((eachTask, idx, arr) => {
+        console.log("First: ", new Date(eachTask.sdate), "Second: ", new Date(eachTask.edate), this.diffInDates(new Date(eachTask.sdate), new Date(eachTask.edate)))
         if (!eachTask.place || eachTask.place == 0) {
-          taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, 20, null]);
+          taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, this.diffInDates(new Date(eachTask.sdate), new Date(eachTask.edate)), null]);
         } else {
-          taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, 20, eachTask.place]);
+          taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, this.diffInDates(new Date(eachTask.sdate), new Date(eachTask.edate)), eachTask.place]);
         }
 
         if (idx == arr.length - 1) {
@@ -221,7 +241,7 @@ export class ProjectscheduleComponent implements OnInit {
       //check if the introduced value is outside of the thresholds
       let result = confirm("By accepting a delay with HIGH impact, the project rescheduler must be opened. Do you want to open it?");
       if (result) {
-        this.rou.navigate(['/home/projects/'+this.router.snapshot.paramMap.get("idproject")+'/rescheduler/'+delayObj.iddelay]);
+        this.rou.navigate(['/home/projects/' + this.router.snapshot.paramMap.get("idproject") + '/rescheduler/' + delayObj.iddelay]);
       } else {
 
       }
@@ -237,14 +257,14 @@ export class ProjectscheduleComponent implements OnInit {
     })
   }
 
-  deleteTask(){
+  deleteTask() {
     let stopit = false;
     this.taskList.forEach((eachTask, idx, array) => {
-      if(eachTask.place == this.selectedTask.idtask){
+      if (eachTask.place == this.selectedTask.idtask) {
         this.alert.error("This task has dependent tasks. Delete them first")
         stopit = true;
       }
-      if(idx == array.length -1 && !stopit){
+      if (idx == array.length - 1 && !stopit) {
         this.taskservice.delete(this.selectedTask.idtask).subscribe(data => {
           this.alert.success("Task deleted");
           this.getTaskByProject();
@@ -253,7 +273,7 @@ export class ProjectscheduleComponent implements OnInit {
         })
       }
     });
-    
+
   }
   applyTaskChanges() {
     // this.alert.warning("NOT IMPLEMENTED");
