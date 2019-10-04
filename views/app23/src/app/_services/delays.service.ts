@@ -6,8 +6,8 @@ import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class DelayService {
     constructor(private http: HttpClient) { }
-    create(description: String, impactlevel: String, taskid: Number) {
-        return this.http.post(environment.apiUrl + '/delays', { description: description, task: taskid, level: impactlevel })
+    create(description: String, impactlevel: String, taskid: Number, impactdays: Number) {
+        return this.http.post(environment.apiUrl + '/delays', { description: description, task: taskid, level: impactlevel, days: impactdays })
     }
     getAll(projectId) {
         return this.http.get(environment.apiUrl + '/delays?project=' + projectId)

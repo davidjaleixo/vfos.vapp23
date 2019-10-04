@@ -112,7 +112,24 @@ export class ProjectreschedulerComponent implements OnInit {
   getDelay() {
     this.delayservice.getById(this.router.snapshot.paramMap.get("iddelay")).subscribe(data => {
       this.delay = data;
+      this.impactdays = this.delay.impactdays
     })
+  }
+  diffInDates(firstDate: Date, lastDate: Date) {
+    let now = new Date();
+    
+    if(now.getTime() > lastDate.getTime() && now.getTime() > firstDate.getTime()){
+      return 100;
+    }
+    if(now.getTime() < lastDate.getTime() && now.getTime() < firstDate.getTime()){
+      return 0;
+    }
+    
+    let diff = ((lastDate.getTime() - firstDate.getTime()) / (1000 * 3600 * 24)) + 1;
+
+    let diffNow = ((now.getTime() - firstDate.getTime()) / (1000 * 3600 * 24));
+    console.log("diff:", diff, "diffNow", diffNow);
+    return Math.ceil(diffNow * 100 / diff);
   }
 
   getTaskByProject() {
@@ -135,9 +152,9 @@ export class ProjectreschedulerComponent implements OnInit {
       ]);
       this.transform.forEach((eachTask, idx, arr) => {
         if (!eachTask.place || eachTask.place == 0) {
-          taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, 20, null]);
+          taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, this.diffInDates(new Date(eachTask.sdate), new Date(eachTask.edate)), null]);
         } else {
-          taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, 20, eachTask.place]);
+          taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, this.diffInDates(new Date(eachTask.sdate), new Date(eachTask.edate)), eachTask.place]);
         }
 
         if (idx == arr.length - 1) {
@@ -219,9 +236,9 @@ export class ProjectreschedulerComponent implements OnInit {
     ]);
     this.taskList.forEach((eachTask, idx, arr) => {
       if (!eachTask.place || eachTask.place == 0) {
-        taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, 20, null]);
+        taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, this.diffInDates(new Date(eachTask.sdate), new Date(eachTask.edate)), null]);
       } else {
-        taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, 20, eachTask.place]);
+        taskListen.push([eachTask.idtask, eachTask.name, new Date(eachTask.sdate), new Date(eachTask.edate), null, this.diffInDates(new Date(eachTask.sdate), new Date(eachTask.edate)), eachTask.place]);
       }
 
       if (idx == arr.length - 1) {

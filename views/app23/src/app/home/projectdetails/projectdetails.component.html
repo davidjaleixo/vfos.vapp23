@@ -18,8 +18,8 @@
           <!--a href="#" class="btn btn-primary">New</a-->
           <!-- <button *ngIf="user.role==1||user.role==2" data-toggle="modal" data-target="#slumpTestModal"
             class="btn btn-primary center-block">New</button> -->
-          <a *ngIf="user.role==2" href="#" class="card-link " routerLink="schedule"
-            class="card-link">Project Schedule</a>
+          <a *ngIf="user.role==2" href="#" class="card-link " routerLink="schedule" class="card-link">Project
+            Schedule</a>
           <a *ngIf="user.role==1||user.role==2" href="#" data-toggle="modal" data-target="#newDelaymodal"
             class="card-link">New Delay</a>
           <!-- <a *ngIf="user.role==1||user.role==2" class="card-link" routerLink="dashboard" href="#">Dashboard</a> -->
@@ -85,11 +85,11 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="enddate">Task</span>
             </div>
-
+            
             <select class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.task.errors }"
               formControlName="task" id="task" required>
               <option disabled selected value> Select the task </option>
-              <option [ngValue]="avtask" *ngFor="let avtask of taskList" required>{{avtask.name}}
+              <option [ngValue]="avtask" *ngFor="let avtask of taskList" required [disabled]="checkTaskStatus(avtask)"  >{{avtask.name}} {{giveTaskFinishedID(avtask)}}
               </option>
             </select>
             <div *ngIf="submitted && f.task.invalid" class="invalid-feedback">
@@ -114,7 +114,18 @@
               <div *ngIf="f.impact.errors.required">Field is required</div>
             </div>
           </div>
-
+          <!-- DELAY IMPACT DAY -->
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="delayamount">Impact Days</span>
+            </div>
+            <input type="number" min="1" required [ngClass]="{ 'is-invalid': submitted && f.days.errors }"
+              class="form-control" formControlName="days" placeholder="Impact days"
+              aria-label="Impact days" aria-describedby="basic-addon1">
+            <div *ngIf="submitted && f.days.invalid" class="invalid-feedback">
+              <div *ngIf="f.days.errors.required">Field is required</div>
+            </div>
+          </div>
         </div>
         <!-- Modal footer -->
         <div class="modal-footer">

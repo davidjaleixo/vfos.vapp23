@@ -41,7 +41,8 @@ export class ProjectdetailsComponent implements OnInit {
     this.newDelayForm = this.fb.group({
       description: ['', Validators.required],
       task: ['', Validators.required],
-      impact: ['', Validators.required]
+      impact: ['', Validators.required],
+      days: ['', Validators.required]
     });
   }
   getTaskByProject() {
@@ -75,7 +76,7 @@ export class ProjectdetailsComponent implements OnInit {
     if (this.newDelayForm.invalid) {
       return;
     }
-    this.delayservice.create(this.f.description.value, this.f.impact.value, this.f.task.value.idtask).subscribe( data => {
+    this.delayservice.create(this.f.description.value, this.f.impact.value, this.f.task.value.idtask, this.f.days.value).subscribe( data => {
       this.alert.success("Delay is created");
       this.submitted = false;
       this.newDelayForm.reset();
@@ -84,5 +85,23 @@ export class ProjectdetailsComponent implements OnInit {
     })
   }
 
+  checkTaskStatus(task: any){
+    let endDate = new Date(task.edate);
+    let startDate = new Date(task.sdate);
+    let now = new Date();
+    if(now.getTime() > endDate.getTime() && now.getTime() > startDate.getTime()){
+      return true
+    }
+    return false;
+  }
+  giveTaskFinishedID(task:any){
+    let endDate = new Date(task.edate);
+    let startDate = new Date(task.sdate);
+    let now = new Date();
+    if(now.getTime() > endDate.getTime() && now.getTime() > startDate.getTime()){
+      return "(Task Closed)"
+    }
+    return "";
+  }
 
 }

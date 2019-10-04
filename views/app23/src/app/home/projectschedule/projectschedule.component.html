@@ -20,8 +20,8 @@
         <!-- Editor sidebar content -->
         <!-- NAME -->
         <!-- delete task -->
-        <button (click)="deleteTask()" class=" float-right btn btn-sm btn-danger mb-3"><i
-          class="fa fa-trash"></i> Delete Task</button>
+        <button (click)="deleteTask()" class=" float-right btn btn-sm btn-danger mb-3"><i class="fa fa-trash"></i>
+          Delete Task</button>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="taskNameeditor">Name</span>
@@ -36,36 +36,38 @@
             <span class="input-group-text" id="startdateeditor">Start Date</span>
           </div>
           <!-- <input class="form-control" required type="date" [ngModel]="selectedTask.sdate | date:'yyyy-MM-dd'" (input)="selectedTask.sdate=parseDate($event.target.value)"> -->
-          <input class="form-control" required type="date" [ngModel]="selectedTask.sdate | date:'yyyy-MM-dd'" (input)="selectedTask.sdate=$event.target.value">
+          <input class="form-control" required type="date" [ngModel]="selectedTask.sdate | date:'yyyy-MM-dd'"
+            (input)="selectedTask.sdate=$event.target.value">
         </div>
-        {{selectedTask.sdate}}
+        
         <!-- end date -->
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="startdateeditor">End Date</span>
           </div>
-          <input class="form-control" required type="date" [ngModel]="selectedTask.edate | date:'yyyy-MM-dd'" (input)="selectedTask.edate=$event.target.value">
+          <input class="form-control" required type="date" [ngModel]="selectedTask.edate | date:'yyyy-MM-dd'"
+            (input)="selectedTask.edate=$event.target.value">
         </div>
-        {{selectedTask.edate}}
+        
         <!-- after start dep -->
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="enddate">Dependency</span>
           </div>
 
-          <select class="form-control" required id="depEditor" required [(ngModel)]="selectedTask.place" >
+          <select class="form-control" required id="depEditor" required [(ngModel)]="selectedTask.place">
             <option disabled value> Select the task </option>
             <option value="null"> None </option>
             <option [ngValue]="avtask.idtask" *ngFor="let avtask of taskList" required>{{avtask.name}}
             </option>
           </select>
-          
+
         </div>
-        {{selectedTask.place}}
         
+
         <!-- apply changes -->
-        <button (click)="applyTaskChanges()" class=" float-right btn btn-sm btn-vfos"><i
-          class="fa fa-save"></i> Apply changes</button>
+        <button (click)="applyTaskChanges()" class=" float-right btn btn-sm btn-vfos"><i class="fa fa-save"></i> Apply
+          changes</button>
       </div>
     </div>
 
@@ -110,6 +112,7 @@
               <th scope="col">Task</th>
               <th scope="col">Description</th>
               <th scope="col">Impact Level</th>
+              <th scope="col">Required Days</th>
               <th scope="col">Status</th>
               <th scope="col">Created By</th>
               <th scope="col">Date</th>
@@ -121,8 +124,11 @@
               <th scope="row">{{delay.iddelay}}</th>
               <td>{{delay.name}}</td>
               <td>{{delay.description}}</td>
+              <!-- impact leve -->
               <td *ngIf="delay.impactlevel == 1">LOW</td>
               <td *ngIf="delay.impactlevel == 2">HIGH</td>
+              <!-- impact days -->
+              <td>{{delay.impactdays}}</td>
               <td *ngIf="delay.accepted == 't'">Accepted</td>
               <td *ngIf="delay.accepted == 'f'">Rejected</td>
               <td *ngIf="delay.accepted == null">Pending</td>
