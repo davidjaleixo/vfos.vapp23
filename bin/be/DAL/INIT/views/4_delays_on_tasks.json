@@ -1,4 +1,4 @@
 {
-    "view_definition_query":"select d.iddelay, d.description, d.accepted, d.createdby, acc.username, d.idTask, d.createdat, d.impactlevel, t.name, t.sdate, t.edate, t.open, t.rescheduled, t.place, proj.idprojects, proj.name as projectname from consulgal.delays as d left join consulgal.tasks as t on t.idtask = d.idtask left join consulgal.accounts as acc on acc.idaccounts = d.createdby left join consulgal.projects as proj on t.idprojects = proj.idprojects",
+    "view_definition_query":"select d.iddelay, d.description, d.accepted, d.createdby, d.impactdays, acc.username, d.idTask, d.createdat, d.impactlevel, t.name, t.sdate, t.edate, t.open, t.rescheduled, t.place, proj.idprojects, proj.name as projectname from consulgal.delays as d left join consulgal.tasks as t on t.idtask = d.idtask left join consulgal.accounts as acc on acc.idaccounts = d.createdby left join consulgal.projects as proj on t.idprojects = proj.idprojects",
     "view_name":"delays_on_tasks"
  }

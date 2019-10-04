@@ -33,6 +33,11 @@
             "allow_null": true,
             "name": "impactlevel",
             "type": "integer"
+        },
+        {
+            "allow_null": false,
+            "name": "impactdays",
+            "type": "integer"
         }
     ],
     "constraints": [
