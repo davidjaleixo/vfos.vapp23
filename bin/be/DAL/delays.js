@@ -46,9 +46,9 @@ module.exports = {
             }
         })
     },
-    create: function (description, taskid, createdby, impactlevel, cb) {
+    create: function (description, taskid, createdby, impactlevel, impactdays, cb) {
 
-        storage('POST', "/tables/delays/rows", [{ description: description, idtask: taskid, impactlevel, impactlevel, createdby, createdby }], function (error, response, body) {
+        storage('POST', "/tables/delays/rows", [{ description: description, idtask: taskid, impactlevel, impactlevel, createdby, createdby, impactdays: impactdays }], function (error, response, body) {
             if (!error) {
                 cb(false, { message: "Delay is created" })
             } else {

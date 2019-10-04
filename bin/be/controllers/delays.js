@@ -45,8 +45,8 @@ var _get = function (req, res) {
 }
 
 var _create = function (req, res) {
-    if (req.body.description && req.body.task && req.body.level) {
-        dal.delays.create(req.body.description, req.body.task, req.user.id, req.body.level, function (err, answer) {
+    if (req.body.description && req.body.task && req.body.level && req.body.days) {
+        dal.delays.create(req.body.description, req.body.task, req.user.id, req.body.level, req.body.days, function (err, answer) {
             if (!err) {
                 res.status(201).json(answer);
             } else {
