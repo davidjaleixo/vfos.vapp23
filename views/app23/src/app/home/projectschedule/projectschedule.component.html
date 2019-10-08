@@ -39,7 +39,7 @@
           <input class="form-control" required type="date" [ngModel]="selectedTask.sdate | date:'yyyy-MM-dd'"
             (input)="selectedTask.sdate=$event.target.value">
         </div>
-        
+
         <!-- end date -->
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -48,7 +48,7 @@
           <input class="form-control" required type="date" [ngModel]="selectedTask.edate | date:'yyyy-MM-dd'"
             (input)="selectedTask.edate=$event.target.value">
         </div>
-        
+
         <!-- after start dep -->
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -63,7 +63,7 @@
           </select>
 
         </div>
-        
+
 
         <!-- apply changes -->
         <button (click)="applyTaskChanges()" class=" float-right btn btn-sm btn-vfos"><i class="fa fa-save"></i> Apply
@@ -96,12 +96,11 @@
         <p class="lead">There is no tasks created</p>
       </div>
 
-      <!-- <google-chart [data]="timelineChart"></google-chart> -->
       <div class="card-header">
         Delays historic
       </div>
       <div class="card-body" *ngIf="delaysList.length == 0">
-        <h1 class="display-4">Seems that there are no delays</h1>
+        <h3 >Seems that there are no delays</h3>
         <p class="lead">Your project is doing great</p>
       </div>
       <div class="card-body" *ngIf="delaysList.length != 0">
@@ -186,6 +185,7 @@
               type="date" formControlName="startdate" id="example-date-input">
             <div *ngIf="submitted && f.startdate.invalid" class="invalid-feedback">
               <div *ngIf="f.startdate.errors.required">Start Date is required</div>
+              <div *ngIf="f.startdate.errors.mustBeBigger">Must start after the selected Dependecy's Start Date ({{f.startdate.errors.mustBeBiggerTip}})</div>
             </div>
           </div>
           <!-- TASK END DATE -->
@@ -195,13 +195,15 @@
             </div>
             <input class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.enddate.errors }" type="date"
               formControlName="enddate" id="enddate-input">
+
             <div *ngIf="submitted && f.enddate.invalid" class="invalid-feedback">
               <div *ngIf="f.enddate.errors.required">End Date is required</div>
+              <div *ngIf="f.enddate.errors.mustBeBigger">End Date must be bigger than Start Date</div>
+              
             </div>
-            <div *ngIf="submitted && newTaskForm.invalid">
-              <div>The task must have a start date before the due date</div>
-            </div>
+            
           </div>
+          
 
           <!-- TASK DEPENDECY -->
           <div class="input-group mb-3">
@@ -209,16 +211,20 @@
               <span class="input-group-text" id="enddate">After finish</span>
             </div>
 
-            <select class="form-control" required [ngClass]="{ 'is-invalid': submitted && !validateDependecy() }"
+            <select class="form-control" required [ngClass]="{ 'is-invalid': submitted && f.after.errors }"
               formControlName="after" id="supplier" required>
               <option disabled selected value> Select the task </option>
-              <option selected value="None"> None </option>
+              <option value="None"> None </option>
               <option [ngValue]="avtask" *ngFor="let avtask of taskList" required>{{avtask.name}}
               </option>
             </select>
-            <div *ngIf="submitted && !validateDependecy()" class="invalid-feedback">
-              <div>The task must have a start date after this dependency the due date</div>
+            <div *ngIf="submitted && f.after.invalid" class="invalid-feedback">
+              <div *ngIf="f.after.errors.required">Dependecy is required</div>
             </div>
+            <!-- <div *ngIf="submitted && !validateDependecy()" class="invalid-feedback">
+              
+              <div>The task must have a start date after this dependency the due date</div>
+            </div> -->
 
 
           </div>

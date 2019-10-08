@@ -2,18 +2,37 @@ import { Component, OnInit } from '@angular/core';
 import { ProjectService, AuthenticationService, TaskService, DelayService } from 'src/app/_services';
 import { ActivatedRoute, Router } from "@angular/router";
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { del } from 'selenium-webdriver/http';
 import { ChartSelectEvent, ChartMouseOverEvent } from 'ng2-google-charts';
 import * as $ from 'jquery';
+
+import { dateLessValidator, dateDependecyValidator } from 'src/app/_helpers';
+
+
+// function dateValidator(control: FormControl) {
+//   console.log("dateValidator processing with form control:", control);
+
+//   if (control.value !== undefined) {
+//     return { 'enddateError': true };
+//   }
+//   return null;
+
+// }
 
 @Component({
   selector: 'app-projectschedule',
   templateUrl: './projectschedule.component.html',
   styleUrls: ['./projectschedule.component.css']
 })
+
+
+
+
 export class ProjectscheduleComponent implements OnInit {
+
+
 
   tasktoshowhint: boolean = false;
   showSelectedPane: boolean = false;
@@ -65,7 +84,7 @@ export class ProjectscheduleComponent implements OnInit {
     ],
     opt_firstRowIsData: false,
     options: {
-      height: 200,
+      height: 80,
       gantt: {
         criticalPathEnabled: false,
         trackHeight: 30,
@@ -107,7 +126,14 @@ export class ProjectscheduleComponent implements OnInit {
       startdate: ['', Validators.required],
       enddate: ['', Validators.required],
       after: ['', Validators.required]
-    }, { validator: this.dateLessThan('startdate', 'enddate') });
+    }, { validator: [dateLessValidator('startdate', 'enddate'), dateDependecyValidator('after', 'startdate')] });
+  }
+  validateDate(group: FormGroup) {
+    ///TODO: Implement some better validation logic
+    const invalid = group.get('startDate').value > group.get('endDate').value;
+    ///TODO: Implement some logic to mark controls dirty if is necessary.
+
+    return invalid ? { 'invalidDate': true } : null;
   }
   getDelaysByProject() {
     this.delayservice.getAll(this.router.snapshot.paramMap.get("idproject")).subscribe(data => {
@@ -120,14 +146,14 @@ export class ProjectscheduleComponent implements OnInit {
 
   diffInDates(firstDate: Date, lastDate: Date) {
     let now = new Date();
-    
-    if(now.getTime() > lastDate.getTime() && now.getTime() > firstDate.getTime()){
+
+    if (now.getTime() > lastDate.getTime() && now.getTime() > firstDate.getTime()) {
       return 100;
     }
-    if(now.getTime() < lastDate.getTime() && now.getTime() < firstDate.getTime()){
+    if (now.getTime() < lastDate.getTime() && now.getTime() < firstDate.getTime()) {
       return 0;
     }
-    
+
     let diff = ((lastDate.getTime() - firstDate.getTime()) / (1000 * 3600 * 24)) + 1;
 
     let diffNow = ((now.getTime() - firstDate.getTime()) / (1000 * 3600 * 24));
@@ -165,6 +191,8 @@ export class ProjectscheduleComponent implements OnInit {
         if (idx == arr.length - 1) {
 
           this.ganttChart.dataTable = taskListen
+          //update chart size
+          this.ganttChart.options.height = 40 * taskListen.length;
           console.log("attaching new gantt data...", this.ganttChart);
           this.ganttChart.component.draw();
         }
@@ -177,7 +205,9 @@ export class ProjectscheduleComponent implements OnInit {
     return d instanceof Date;
   }
   validateDependecy() {
-    if (this.f.after.value == "None") { return true }
+    // console.log("Running validateDependecy...");
+    // console.log("after value: ", this.f.after.value);
+    if (this.f.after.value == "None" || this.f.after.value == null) { return true }
 
     let depEndDate = new Date(this.f.after.value.edate);
     return (depEndDate >= new Date(this.f.startdate.value) && this.isValidDate(depEndDate)) ? false : true;
@@ -187,11 +217,15 @@ export class ProjectscheduleComponent implements OnInit {
     return (group: FormGroup): { [key: string]: any } => {
       let f = group.controls[from];
       let t = group.controls[to];
+      console.log("Validating: Comparing dates: ", f.value, "---", t.value);
       if (f.value > t.value) {
+        console.log("dateLessThan returning error")
         return {
           dates: "Date from should be less than Date to"
         };
+
       }
+      console.log("dateLessThan not returning error")
       return {};
     }
   }
@@ -328,7 +362,7 @@ export class ProjectscheduleComponent implements OnInit {
         this.taskservice.create(this.f.name.value, this.router.snapshot.paramMap.get("idproject"), this.f.after.value.idtask, this.f.startdate.value, this.f.enddate.value).subscribe(data => {
           this.alert.success('Task created');
           this.submitted = false;
-          this.newTaskForm.reset();
+          this.newTaskForm.reset({after: this.f.after.value});
           this.getTaskByProject();
 
         }, err => {
@@ -341,7 +375,7 @@ export class ProjectscheduleComponent implements OnInit {
       this.taskservice.create(this.f.name.value, this.router.snapshot.paramMap.get("idproject"), 0, this.f.startdate.value, this.f.enddate.value).subscribe(data => {
         this.alert.success('Task created');
         this.submitted = false;
-        this.newTaskForm.reset();
+        this.newTaskForm.reset({after: 'None'});
         this.getTaskByProject();
 
       }, err => {

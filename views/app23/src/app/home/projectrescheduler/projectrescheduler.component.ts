@@ -160,6 +160,7 @@ export class ProjectreschedulerComponent implements OnInit {
         if (idx == arr.length - 1) {
 
           this.ganttChart.dataTable = taskListen
+          this.ganttChart.options.height = 40 * taskListen.length;
           console.log("attaching new gantt data...", this.ganttChart);
         }
       })
