@@ -117,14 +117,14 @@ export class ProjectreschedulerComponent implements OnInit {
   }
   diffInDates(firstDate: Date, lastDate: Date) {
     let now = new Date();
-    
-    if(now.getTime() > lastDate.getTime() && now.getTime() > firstDate.getTime()){
+
+    if (now.getTime() > lastDate.getTime() && now.getTime() > firstDate.getTime()) {
       return 100;
     }
-    if(now.getTime() < lastDate.getTime() && now.getTime() < firstDate.getTime()){
+    if (now.getTime() < lastDate.getTime() && now.getTime() < firstDate.getTime()) {
       return 0;
     }
-    
+
     let diff = ((lastDate.getTime() - firstDate.getTime()) / (1000 * 3600 * 24)) + 1;
 
     let diffNow = ((now.getTime() - firstDate.getTime()) / (1000 * 3600 * 24));
@@ -160,7 +160,17 @@ export class ProjectreschedulerComponent implements OnInit {
         if (idx == arr.length - 1) {
 
           this.ganttChart.dataTable = taskListen
-          this.ganttChart.options.height = 40 * taskListen.length;
+          this.ganttChart.options = {
+            height: 40 * taskListen.length,
+            gantt: {
+              criticalPathEnabled: false,
+              trackHeight: 30,
+              arrow: {
+                width: 5,
+                color: '#471E68'
+              }
+            }
+          }
           console.log("attaching new gantt data...", this.ganttChart);
         }
       })
@@ -202,15 +212,15 @@ export class ProjectreschedulerComponent implements OnInit {
     return date;
   }
 
-  saveReschedule(){
+  saveReschedule() {
     let result = confirm("Are you sure? This can't be undone.")
-    if(result){
-      this.taskList.forEach((eachTask,idx,arr) => {
+    if (result) {
+      this.taskList.forEach((eachTask, idx, arr) => {
         this.taskservice.update(eachTask).subscribe(data => {
           this.alert.success("Task update");
         })
-        if(idx == arr.length -1){
-          this.delayservice.accept(this.router.snapshot.paramMap.get("iddelay"),true).subscribe(data => {
+        if (idx == arr.length - 1) {
+          this.delayservice.accept(this.router.snapshot.paramMap.get("iddelay"), true).subscribe(data => {
             this.alert.success("Delay was accepted. Project's task were rescheduled")
           }, err => {
             this.alert.error("Error");
@@ -218,7 +228,7 @@ export class ProjectreschedulerComponent implements OnInit {
         }
       })
 
-    }else{
+    } else {
       return
     }
   }

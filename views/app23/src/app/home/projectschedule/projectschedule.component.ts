@@ -192,7 +192,18 @@ export class ProjectscheduleComponent implements OnInit {
 
           this.ganttChart.dataTable = taskListen
           //update chart size
-          this.ganttChart.options.height = 40 * taskListen.length;
+          this.ganttChart.options =
+            {
+              height: 40 * taskListen.length,
+              gantt: {
+                criticalPathEnabled: false,
+                trackHeight: 30,
+                arrow: {
+                  width: 5,
+                  color: '#471E68'
+                }
+              }
+            };
           console.log("attaching new gantt data...", this.ganttChart);
           this.ganttChart.component.draw();
         }
@@ -362,7 +373,7 @@ export class ProjectscheduleComponent implements OnInit {
         this.taskservice.create(this.f.name.value, this.router.snapshot.paramMap.get("idproject"), this.f.after.value.idtask, this.f.startdate.value, this.f.enddate.value).subscribe(data => {
           this.alert.success('Task created');
           this.submitted = false;
-          this.newTaskForm.reset({after: this.f.after.value});
+          this.newTaskForm.reset({ after: this.f.after.value });
           this.getTaskByProject();
 
         }, err => {
@@ -375,7 +386,7 @@ export class ProjectscheduleComponent implements OnInit {
       this.taskservice.create(this.f.name.value, this.router.snapshot.paramMap.get("idproject"), 0, this.f.startdate.value, this.f.enddate.value).subscribe(data => {
         this.alert.success('Task created');
         this.submitted = false;
-        this.newTaskForm.reset({after: 'None'});
+        this.newTaskForm.reset({ after: 'None' });
         this.getTaskByProject();
 
       }, err => {
