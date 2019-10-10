@@ -134,10 +134,13 @@
               <td>{{delay.username}}</td>
               <td>{{delay.createdat | date:'dd/MM/yyyy'}}</td>
               <td>
-                <button *ngIf="!delay.accepted" class="btn btn-success btn-sm" (click)="accept(delay)">
+                <button *ngIf="!delay.accepted && delay.impactlevel == 1" class="btn btn-info btn-sm" (click)="accept(delay)">
+                  <i class="fa fa-check"></i> Dispatch
+                </button>
+                <button *ngIf="!delay.accepted && delay.impactlevel == 2" class="btn btn-success btn-sm" (click)="accept(delay)">
                   <i class="fa fa-check"></i> Accept
                 </button>
-                <button *ngIf="!delay.accepted" class="btn btn-danger btn-sm" (click)="reject(delay)">
+                <button *ngIf="!delay.accepted && delay.impactlevel == 2" class="btn btn-danger btn-sm" (click)="reject(delay)">
                   <i class="fa fa-times"></i> Reject
                 </button>
                 <button disabled *ngIf="delay.accepted || delay.accepted == false" class="btn btn-secundary btn-sm">
