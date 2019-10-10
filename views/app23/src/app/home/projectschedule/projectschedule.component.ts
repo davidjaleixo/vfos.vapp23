@@ -291,7 +291,11 @@ export class ProjectscheduleComponent implements OnInit {
 
       }
     } else {
-
+      //simply accept this delay
+      this.delayservice.accept(delayObj.iddelay, true).subscribe(data => {
+        this.alert.success("Delay has been accepted");
+        this.getDelaysByProject();
+      })
     }
   }
 
