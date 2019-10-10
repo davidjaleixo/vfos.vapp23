@@ -20,7 +20,7 @@ export function dateDependecyValidator(lowerDate: string, biggerDate: string) {
         if(bigger.errors && !bigger.errors.mustBeBigger){
             return;
         }
-        if ((lower !== null && bigger !== null) && bigger.value < lower) {
+        if ((lower !== null && bigger !== null) && bigger.value <= lower) {
             bigger.setErrors({ mustBeBigger: true, mustBeBiggerTip: lower })
         }else{
             bigger.setErrors(null)
