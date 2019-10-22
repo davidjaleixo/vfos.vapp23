@@ -94,7 +94,7 @@ export class ProjectreschedulerComponent implements OnInit {
   constructor(
     private projectservice: ProjectService,
     private router: ActivatedRoute,
-    private rou: Router,
+    private rout: Router,
     private authentication: AuthenticationService,
     private taskservice: TaskService,
     private fb: FormBuilder,
@@ -212,7 +212,9 @@ export class ProjectreschedulerComponent implements OnInit {
     console.log(date);
     return date;
   }
-
+  redirect() {
+    this.rout.navigate(['/home/projects/' + this.router.snapshot.paramMap.get("idproject") + '/schedule'])
+  }
   saveReschedule() {
     let result = confirm("Are you sure? This can't be undone.")
     if (result) {
@@ -226,7 +228,8 @@ export class ProjectreschedulerComponent implements OnInit {
             this.alert.info("Please wait. You will be redirected to the project schedule...")
 
             setTimeout(function () {
-              this.rou.navigate(['/home/projects/' + this.router.snapshot.paramMap.get("idproject") + '/schedule']);
+              //this.rout.navigate(['/home/projects/' + this.router.snapshot.paramMap.get("idproject") + '/schedule'])
+              this.redirect();
             }, 3000);
 
           }, err => {
