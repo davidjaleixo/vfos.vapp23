@@ -112,7 +112,7 @@ export class ProjectreschedulerComponent implements OnInit {
   getDelay() {
     this.delayservice.getById(this.router.snapshot.paramMap.get("iddelay")).subscribe(data => {
       this.delay = data;
-      this.impactdays = this.delay.impactdays
+      this.impactdays = +this.delay.impactdays
     })
   }
   diffInDates(firstDate: Date, lastDate: Date) {
@@ -222,6 +222,12 @@ export class ProjectreschedulerComponent implements OnInit {
         if (idx == arr.length - 1) {
           this.delayservice.accept(this.router.snapshot.paramMap.get("iddelay"), true).subscribe(data => {
             this.alert.success("Delay was accepted. Project's task were rescheduled")
+            this.alert.info("Please wait. You will be redirected to the project schedule...")
+
+            setTimeout(function () {
+              this.rou.navigate(['/home/projects/' + this.router.snapshot.paramMap.get("idproject") + '/schedule']);
+            }, 3000);
+
           }, err => {
             this.alert.error("Error");
           })
