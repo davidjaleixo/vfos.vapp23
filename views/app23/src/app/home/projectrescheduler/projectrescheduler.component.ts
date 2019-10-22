@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService, AuthenticationService, TaskService, DelayService } from 'src/app/_services';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
@@ -94,6 +94,7 @@ export class ProjectreschedulerComponent implements OnInit {
   constructor(
     private projectservice: ProjectService,
     private router: ActivatedRoute,
+    private rou: Router,
     private authentication: AuthenticationService,
     private taskservice: TaskService,
     private fb: FormBuilder,
