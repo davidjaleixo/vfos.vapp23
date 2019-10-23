@@ -11,6 +11,8 @@
     <div class="card mb-3">
       <div class="card-header">
         Project schedule
+        <a class=" float-right btn btn-sm btn-outline-primary" routerLink="/home/projects/{{project.idprojects}}/schedule">Go Back to project schedule page</a>
+        
       </div>
       <div class="card-body">
         <google-chart *ngIf="taskList.length > 0" [data]="ganttChart"></google-chart>

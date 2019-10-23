@@ -20,7 +20,7 @@ export class ProjectreschedulerComponent implements OnInit {
   tasks: GoogleChartInterface;
   newTaskForm: FormGroup;
   submitted: boolean;
-  taskList: any;
+  taskList: any = [];
   delaysList: any;
   delay: any;
   showReschedule: boolean = false;
@@ -136,7 +136,7 @@ export class ProjectreschedulerComponent implements OnInit {
   getTaskByProject() {
     this.taskservice.getAll(this.router.snapshot.paramMap.get("idproject")).subscribe(data => {
       console.log(data);
-      this.taskList = [];
+      // this.taskList = [];
       this.taskList = data;
       // this.taskList.push({name: "None"});
       //convert data for task scheduler
@@ -159,7 +159,8 @@ export class ProjectreschedulerComponent implements OnInit {
         }
 
         if (idx == arr.length - 1) {
-
+          // force a reference update (otherwise Angular doesn't detect the change)
+          this.ganttChart = Object.create(this.ganttChart);
           this.ganttChart.dataTable = taskListen
           this.ganttChart.options = {
             height: 40 * taskListen.length,
@@ -173,6 +174,7 @@ export class ProjectreschedulerComponent implements OnInit {
             }
           }
           console.log("attaching new gantt data...", this.ganttChart);
+          // this.ganttChart.component.draw();
         }
       })
     }, err => {
@@ -225,12 +227,10 @@ export class ProjectreschedulerComponent implements OnInit {
         if (idx == arr.length - 1) {
           this.delayservice.accept(this.router.snapshot.paramMap.get("iddelay"), true).subscribe(data => {
             this.alert.success("Delay was accepted. Project's task were rescheduled")
-            this.alert.info("Please wait. You will be redirected to the project schedule...")
+            this.alert.info("Project schedule was updated...")
 
-            setTimeout(function () {
-              //this.rout.navigate(['/home/projects/' + this.router.snapshot.paramMap.get("idproject") + '/schedule'])
-              this.redirect();
-            }, 3000);
+            //update the schedule on top
+            this.getTaskByProject();
 
           }, err => {
             this.alert.error("Error");

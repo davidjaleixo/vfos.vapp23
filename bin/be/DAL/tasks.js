@@ -57,7 +57,7 @@ module.exports = {
         console.log("DAL:", taskId, newName, newSdate, newEdate, newPlace);
         // if(newPlace == "" || newPlace == "null"){ newPlace = null}
         if(newPlace == null){ newPlace = 'null'}
-        storage('PATCH', "/tables/tasks/rows?filter=idtask=" + taskId, { name: newName, sdate: "'" + newSdate + "'" , edate: "'" + newEdate + "'", place: newPlace }, function (error, response, body) {
+        storage('PATCH', "/tables/tasks/rows?filter=idtask=" + taskId, { name: newName, sdate: newSdate  , edate: newEdate , place: newPlace }, function (error, response, body) {
             console.log(body);
             if (!error ) {
                 cb(false, { message: "Task is updated" })

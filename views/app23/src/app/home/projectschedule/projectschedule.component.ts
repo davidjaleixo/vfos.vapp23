@@ -44,7 +44,7 @@ export class ProjectscheduleComponent implements OnInit {
   tasks: GoogleChartInterface;
   newTaskForm: FormGroup;
   submitted: boolean;
-  taskList: any;
+  taskList: any = [];
   delaysList: any;
 
 
@@ -115,6 +115,8 @@ export class ProjectscheduleComponent implements OnInit {
 
     //get delays for this project
     this.getDelaysByProject();
+    
+    this.delaysList = [];
   }
   convertDate(date: string) {
     return new Date(date);
@@ -190,6 +192,7 @@ export class ProjectscheduleComponent implements OnInit {
 
         if (idx == arr.length - 1) {
 
+          this.ganttChart = Object.create(this.ganttChart);
           this.ganttChart.dataTable = taskListen
           //update chart size
           this.ganttChart.options =
@@ -205,7 +208,10 @@ export class ProjectscheduleComponent implements OnInit {
               }
             };
           console.log("attaching new gantt data...", this.ganttChart);
-          this.ganttChart.component.draw();
+          // let chartcomp = this.ganttChart;
+          // this.ganttChart.component.wrapper
+          // chartcomp.draw();
+          // this.ganttChart.component.wrapper.draw();
         }
       })
     }, err => {
