@@ -383,7 +383,7 @@ export class ProjectscheduleComponent implements OnInit {
         this.taskservice.create(this.f.name.value, this.router.snapshot.paramMap.get("idproject"), this.f.after.value.idtask, this.f.startdate.value, this.f.enddate.value).subscribe(data => {
           this.alert.success('Task created');
           this.submitted = false;
-          this.newTaskForm.reset({ after: this.f.after.value });
+          this.newTaskForm.reset({ after: 'None' });
           this.getTaskByProject();
 
         }, err => {
