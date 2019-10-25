@@ -4,7 +4,7 @@
   "description": "OnSiteManager",
   "main": "index.js",
   "scripts": {
-    "boot": "npm install && cd views/app23 && npm i && ng build --prod --aot --deploy-url=\"/${ASSET_NAME}/\" --base-href=\"/app23/\" ",
+    "boot": "npm install && cd views/app23 && npm i && ng build --prod --aot --deploy-url=\"/${ASSET_NAME}/\" --base-href=\"/${ASSET_NAME}/\" ",
     "start-be": "PORT=4201 node ./bin/be/index.js",
     "start": "concurrently --kill-others \"npm run start-be\""
   },
